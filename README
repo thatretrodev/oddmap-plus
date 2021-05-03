@@ -1,0 +1,21 @@
+Brihaspati[WIP]
+
+Please let me know if there are any problems.
+As this is work-in-progress features like shard management haven't been added yet.
+
+
+
+dependencies:
+github.com/bwmarrin/discordgo
+github.com/jonas747/dshardmanager
+
+compiling:
+have go in your path
+$ go build
+
+running:
+./brihaspati -t "Bot <token>"
+
+A public instance can be added with https://discord.com/api/oauth2/authorize?client_id=798777262794735639&permissions=268511286&scope=bot
+The bot's tag is Brhaspati#1068
+
