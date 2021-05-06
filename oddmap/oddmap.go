@@ -10,8 +10,8 @@ import (
 const (
 	Up    = "UP"
 	Down  = "DOWN"
-	Right = "LEFT"
-	Left  = "RIGHT"
+	Right = "RIGHT"
+	Left  = "LEFT"
 )
 
 type position struct {
@@ -20,11 +20,12 @@ type position struct {
 }
 
 type OddMap struct {
-	Name   string
-	width  int
-	height int
-	Board  [][]string
-	Player position
+	Name     string
+	width    int
+	height   int
+	Board    [][]string
+	Player   position
+	currentL string
 }
 
 func (m *OddMap) Set(name string, width int, height int) {
@@ -41,9 +42,9 @@ func (m *OddMap) SetPlayerPosition(x int, y int) {
 
 func (m *OddMap) MovePlayer(direction string, force int) {
 	if direction == "UP" {
-		m.Player.Y += force
-	} else if direction == "DOWN" {
 		m.Player.Y -= force
+	} else if direction == "DOWN" {
+		m.Player.Y += force
 	} else if direction == "LEFT" {
 		m.Player.X -= force
 	} else if direction == "RIGHT" {
@@ -51,10 +52,11 @@ func (m *OddMap) MovePlayer(direction string, force int) {
 	} else {
 		log.Print("ERROR: INVALID DIRECTION")
 	}
-	m.checkPlayerPosition()
+	checkPlayerPosition(m)
 }
 
 func (m *OddMap) LoadMap(path string) {
+	m.currentL = path
 	file, err := os.Open(path)
 	if err != nil {
 		//handle error
@@ -69,22 +71,48 @@ func (m *OddMap) LoadMap(path string) {
 
 }
 
-func (m *OddMap) PlainMap() string {
-	return m.formatMap(m.Board)
+func (m OddMap) PlainMap() string {
+	m.regenerateBoard()
+	a := m
+	//a.Board[a.Player.Y][a.Player.X] = "X"
+	return formatToBoard(a.Board)
 }
 
-func (m *OddMap) checkPlayerPosition() {
-	if m.Player.X <= 0 {
-		m.Player.X = (m.width - 1) - (0 - m.Player.X)
-	} else if m.Player.X >= m.width {
-		m.Player.X = (m.Player.X - m.width) - 1
+func (m *OddMap) PlayerMap() string {
+	m.regenerateBoard()
+	a := m
+	a.Board[a.Player.Y][a.Player.X] = "X"
+	/*var e string
+	for x := range a.Board {
+		e += (strings.Join(a.Board[x], "") + "\n")
 	}
+	return e*/
+	return formatToBoard(a.Board)
 }
 
-func (m *OddMap) formatMap(a [][]string) string {
+func checkPlayerPosition(m *OddMap) {
+	if m.Player.X < 0 {
+		m.Player.X = (m.width) + m.Player.X
+	} else if m.Player.X >= m.width {
+		m.Player.X = (m.Player.X - m.width)
+	}
+
+	if m.Player.Y < 0 {
+		m.Player.Y = (m.height) + m.Player.Y + 1
+	} else if m.Player.Y >= m.height {
+		m.Player.Y = (m.Player.Y - m.height)
+	}
+
+}
+
+func formatToBoard(m [][]string) string {
 	var e string
-	for x := range a {
-		e += (strings.Join(a[x], "") + "\n")
+	for x := range m {
+		e += (strings.Join(m[x], "") + "\n")
 	}
 	return e
+}
+
+func (m *OddMap) regenerateBoard() {
+	m.LoadMap(m.currentL)
 }

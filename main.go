@@ -15,5 +15,14 @@ func main() {
 		fmt.Println(x.Board[i])
 	}
 	fmt.Println(x.Player.X)
+	fmt.Println(x.PlainMap())
+	fmt.Println(x.PlayerMap())
+	x.SetPlayerPosition(18, 0)
+	fmt.Println(x.Player.X, x.Player.Y)
+	fmt.Println(x.PlayerMap())
+	x.MovePlayer(oddmap.Up, 0)
+	fmt.Println(x.Player.X, x.Player.Y)
+	fmt.Println(x.PlayerMap())
+	fmt.Println(x.PlainMap())
 
 }
