@@ -71,46 +71,17 @@ func (m *OddMap) LoadMap(path string) {
 
 }
 
-func (m OddMap) PlainMap() string {
-	m.regenerateBoard()
-	a := m
-	//a.Board[a.Player.Y][a.Player.X] = "X"
-	return formatToBoard(a.Board)
-}
-
-func (m *OddMap) PlayerMap() string {
-	m.regenerateBoard()
-	a := m
-	a.Board[a.Player.Y][a.Player.X] = "X"
-	/*var e string
-	for x := range a.Board {
-		e += (strings.Join(a.Board[x], "") + "\n")
-	}
-	return e*/
-	return formatToBoard(a.Board)
-}
-
 func checkPlayerPosition(m *OddMap) {
 	if m.Player.X < 0 {
 		m.Player.X = (m.width) + m.Player.X
 	} else if m.Player.X >= m.width {
 		m.Player.X = (m.Player.X - m.width)
-	}
-
-	if m.Player.Y < 0 {
+	} else if m.Player.Y < 0 {
 		m.Player.Y = (m.height) + m.Player.Y + 1
-	} else if m.Player.Y >= m.height {
-		m.Player.Y = (m.Player.Y - m.height)
+	} else if m.Player.Y > m.height {
+		m.Player.Y = (m.Player.Y - m.height) - 1
 	}
 
-}
-
-func formatToBoard(m [][]string) string {
-	var e string
-	for x := range m {
-		e += (strings.Join(m[x], "") + "\n")
-	}
-	return e
 }
 
 func (m *OddMap) regenerateBoard() {
