@@ -20,19 +20,25 @@ type position struct {
 }
 
 type OddMap struct {
-	Name     string
-	width    int
-	height   int
-	Board    [][]string
-	Player   position
-	currentL string
+	Name      string
+	width     int
+	height    int
+	Board     [][]string
+	Player    position
+	currentL  string
+	initState bool //bools are always inited as false
 }
 
 func (m *OddMap) Set(name string, width int, height int) {
-	m.Name = name
-	m.width = width
-	m.height = height
-	//code
+	if m.initState {
+		log.Print("ERROR: CANNOT REINITIALIZE BOARD")
+	} else {
+		m.Name = name
+		m.width = width
+		m.height = height
+		m.initState = true
+		//code
+	}
 }
 
 func (m *OddMap) SetPlayerPosition(x int, y int) {
@@ -52,7 +58,7 @@ func (m *OddMap) MovePlayer(direction string, force int) {
 	} else {
 		log.Print("ERROR: INVALID DIRECTION")
 	}
-	checkPlayerPosition(m)
+	m.checkPlayerPosition()
 }
 
 func (m *OddMap) LoadMap(path string) {
@@ -71,15 +77,29 @@ func (m *OddMap) LoadMap(path string) {
 
 }
 
-func checkPlayerPosition(m *OddMap) {
+func (m *OddMap) PlainMap() string {
+	m.regenerateBoard()
+	return formatToBoard(m.Board)
+}
+
+func (m *OddMap) PlayerMap() string {
+	a := *m
+	//m.regenerateBoard()
+	a.Board[a.Player.Y][a.Player.X] = "X"
+	return formatToBoard(m.Board)
+}
+
+func (m *OddMap) checkPlayerPosition() {
 	if m.Player.X < 0 {
-		m.Player.X = (m.width) + m.Player.X
+		//m.Player.X = (m.width) + m.Player.X
+		m.Player.X = m.width - ((m.width - m.Player.X) % (m.width))
 	} else if m.Player.X >= m.width {
-		m.Player.X = (m.Player.X - m.width)
+		m.Player.X = 0 - ((m.width + m.Player.X) % m.width)
 	} else if m.Player.Y < 0 {
-		m.Player.Y = (m.height) + m.Player.Y + 1
-	} else if m.Player.Y > m.height {
-		m.Player.Y = (m.Player.Y - m.height) - 1
+		//m.Player.Y = (m.height) + m.Player.Y + 1
+		m.Player.Y = m.height - ((m.height - m.Player.Y) % (m.height))
+	} else if m.Player.Y >= m.height {
+		m.Player.Y = 0 - ((m.height + m.Player.Y) % m.height)
 	}
 
 }

@@ -8,7 +8,7 @@ import (
 
 func main() {
 	x := oddmap.OddMap{}
-	x.Set("Test", 20, 4)
+	x.Set("Test", 20, 5)
 	x.LoadMap("test.txt")
 	fmt.Println(x.Name)
 	/*for i := range x.Board {
@@ -21,7 +21,8 @@ func main() {
 	var dir string
 	var strength int
 	for {
-		fmt.Println(oddmap.PlayerMap(x))
+		fmt.Println(x.PlayerMap())
+		fmt.Println(x.PlainMap())
 		fmt.Println(x.Player.X, x.Player.Y)
 		fmt.Println("Enter direction and force:")
 		fmt.Scanln(&dir)
