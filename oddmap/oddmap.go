@@ -73,13 +73,13 @@ func (m *OddMap) LoadMap(path string) {
 
 func checkPlayerPosition(m *OddMap) {
 	if m.Player.X < 0 {
-		m.Player.X = (m.width) + m.Player.X
+		m.Player.X = 0
 	} else if m.Player.X >= m.width {
-		m.Player.X = (m.Player.X - m.width)
+		m.Player.X = m.width
 	} else if m.Player.Y < 0 {
-		m.Player.Y = (m.height) + m.Player.Y + 1
+		m.Player.Y = 0
 	} else if m.Player.Y > m.height {
-		m.Player.Y = (m.Player.Y - m.height) - 1
+		m.Player.Y = m.height
 	}
 
 }
