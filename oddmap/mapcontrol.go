@@ -4,13 +4,13 @@ import "strings"
 
 func PlainMap(m OddMap) string {
 	m.regenerateBoard()
-	return formatToBoard(m.Board)
+	return formatToBoard(m.currentMap)
 }
 
 func PlayerMap(m OddMap) string {
 	m.regenerateBoard()
-	m.Board[m.Player.Y][m.Player.X] = "X"
-	return formatToBoard(m.Board)
+	m.currentMap[m.Player.Y][m.Player.X] = "X"
+	return formatToBoard(m.currentMap)
 }
 
 func formatToBoard(m [][]string) string {

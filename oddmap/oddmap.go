@@ -2,6 +2,7 @@ package oddmap
 
 import (
 	"bufio"
+	"fmt"
 	"log"
 	"os"
 	"strings"
@@ -14,18 +15,24 @@ const (
 	Left  = "LEFT"
 )
 
+type Map struct {
+	Name string
+	Map  [][]string
+}
+
 type position struct {
 	X int
 	Y int
 }
 
 type OddMap struct {
-	Name     string
-	width    int
-	height   int
-	Board    [][]string
-	Player   position
-	currentL string
+	Name           string
+	width          int
+	height         int
+	Boards         map[string]Map
+	Player         position
+	currentMap     [][]string
+	currentMapName string
 }
 
 func (m *OddMap) Set(name string, width int, height int) {
@@ -55,8 +62,8 @@ func (m *OddMap) MovePlayer(direction string, force int) {
 	checkPlayerPosition(m)
 }
 
-func (m *OddMap) LoadMap(path string) {
-	m.currentL = path
+func (m *OddMap) LoadMaps(path string) {
+	//m.currentM = path
 	file, err := os.Open(path)
 	if err != nil {
 		//handle error
@@ -64,11 +71,33 @@ func (m *OddMap) LoadMap(path string) {
 	}
 	defer file.Close()
 	s := bufio.NewScanner(file)
-	m.Board = make([][]string, 0) //clear loaded board
-	for s.Scan() {
-		m.Board = append(m.Board, strings.Split(s.Text(), ""))
+	//m.Board = make([][]string, 0) //clear loaded board
+	scannedlines := make([]string, 0)
+	for s.Scan() { //scan all lines in files to be loaded to individual maps
+		scannedlines = append(scannedlines, s.Text())
 	}
+	fmt.Println(scannedlines) //works until here
+	for x := 0; x < len(scannedlines); x++ {
+		y := Map{}
+		y.Name = scannedlines[x]
+		fmt.Println(x)
+		for ; x < x+m.height; x++ {
+			y.Map = append(y.Map, strings.Split(scannedlines[x], ""))
+		}
+		m.Boards[y.Name] = y
 
+	}
+	fmt.Println(m.Boards)
+
+}
+
+func (m *OddMap) reloadCurrentMap(name string) {
+	m.currentMap = m.Boards[(m.currentMapName)].Map
+
+}
+
+func (m *OddMap) LoadMap(name string) {
+	m.reloadCurrentMap(name)
 }
 
 func checkPlayerPosition(m *OddMap) {
@@ -85,5 +114,5 @@ func checkPlayerPosition(m *OddMap) {
 }
 
 func (m *OddMap) regenerateBoard() {
-	m.LoadMap(m.currentL)
+	m.reloadCurrentMap(m.currentMapName)
 }

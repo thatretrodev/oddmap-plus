@@ -9,7 +9,8 @@ import (
 func main() {
 	x := oddmap.OddMap{}
 	x.Set("Test", 20, 4)
-	x.LoadMap("test.txt")
+	x.LoadMaps("test.txt")
+	x.LoadMap("HOME")
 	fmt.Println(x.Name)
 	/*for i := range x.Board {
 		fmt.Println(x.Board[i])
@@ -18,7 +19,7 @@ func main() {
 	x.SetPlayerPosition(18, 0)
 	fmt.Println(x.Player.X, x.Player.Y)
 	fmt.Println(x.Player.X, x.Player.Y)
-	var dir string
+	/*var dir string
 	var strength int
 	for {
 		fmt.Println(oddmap.PlayerMap(x))
@@ -27,5 +28,5 @@ func main() {
 		fmt.Scanln(&dir)
 		fmt.Scanln(&strength)
 		x.MovePlayer(dir, strength)
-	}
+	}*/
 }
