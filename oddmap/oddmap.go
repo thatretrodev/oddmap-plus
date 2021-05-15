@@ -31,7 +31,7 @@ type OddMap struct {
 	height         int
 	Boards         map[string]Map
 	Player         position
-	currentMap     [][]string
+	CurrentMap     [][]string
 	currentMapName string
 }
 
@@ -64,6 +64,7 @@ func (m *OddMap) MovePlayer(direction string, force int) {
 
 func (m *OddMap) LoadMaps(path string) {
 	//m.currentM = path
+	m.Boards = make(map[string]Map)
 	file, err := os.Open(path)
 	if err != nil {
 		//handle error
@@ -72,32 +73,33 @@ func (m *OddMap) LoadMaps(path string) {
 	defer file.Close()
 	s := bufio.NewScanner(file)
 	//m.Board = make([][]string, 0) //clear loaded board
-	scannedlines := make([]string, 0)
+	//scannedlines := make([]string, 0)
 	for s.Scan() { //scan all lines in files to be loaded to individual maps
-		scannedlines = append(scannedlines, s.Text())
-	}
-	fmt.Println(scannedlines) //works until here
-	for x := 0; x < len(scannedlines); x++ {
+		sLine := strings.ReplaceAll(s.Text(), " ", "")
 		y := Map{}
-		y.Name = scannedlines[x]
-		fmt.Println(x)
-		for ; x < x+m.height; x++ {
-			y.Map = append(y.Map, strings.Split(scannedlines[x], ""))
+		if sLine[:5] == "START" {
+			y.Name = sLine[5:]
+			state := true
+			for s.Scan() && state {
+				sLine := strings.ReplaceAll(s.Text(), " ", "")
+				if sLine[:3] == "END" {
+					state = false
+					break
+				}
+				y.Map = append(y.Map, strings.Split(sLine, ""))
+
+			}
+			fmt.Println(formatToBoard(y.Map))
 		}
 		m.Boards[y.Name] = y
-
 	}
 	fmt.Println(m.Boards)
 
 }
 
-func (m *OddMap) reloadCurrentMap(name string) {
-	m.currentMap = m.Boards[(m.currentMapName)].Map
-
-}
-
 func (m *OddMap) LoadMap(name string) {
-	m.reloadCurrentMap(name)
+	m.CurrentMap = m.Boards[name].Map
+	m.currentMapName = name
 }
 
 func checkPlayerPosition(m *OddMap) {
@@ -114,5 +116,5 @@ func checkPlayerPosition(m *OddMap) {
 }
 
 func (m *OddMap) regenerateBoard() {
-	m.reloadCurrentMap(m.currentMapName)
+	m.LoadMap(m.currentMapName)
 }
