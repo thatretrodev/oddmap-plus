@@ -1,3 +1,3 @@
 module github.com/fisik-yum/oddmap
 
-go 1.14
+go 1.16

@@ -1,4 +1,4 @@
-package github.com/fisik-yum/oddmap/
+package oddmap
 
 import (
 	"fmt"
