@@ -1,8 +1,10 @@
 package main
 
 import (
-	"TA/oddmap"
+	"C"
 	"fmt"
+	
+	"github.com/thatretrodev/oddmap-plus/oddmap"
 )
 
 func main() {
