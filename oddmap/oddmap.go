@@ -31,15 +31,21 @@ type OddMap struct {
 	height         int
 	Boards         map[string]Map
 	Player         position
-	currentMap     [][]string
+	initState      bool
+	CurrentMap     [][]string
 	currentMapName string
 }
 
 func (m *OddMap) Set(name string, width int, height int) {
-	m.Name = name
-	m.width = width
-	m.height = height
-	//code
+	if m.initState {
+		log.Print("ERROR: CANNOT REINITIALIZE BOARD")
+	} else {
+		m.Name = name
+		m.width = width
+		m.height = height
+		m.initState = true
+		//code
+	}
 }
 
 func (m *OddMap) SetPlayerPosition(x int, y int) {
@@ -59,11 +65,12 @@ func (m *OddMap) MovePlayer(direction string, force int) {
 	} else {
 		log.Print("ERROR: INVALID DIRECTION")
 	}
-	checkPlayerPosition(m)
+	m.checkPlayerPosition()
 }
 
 func (m *OddMap) LoadMaps(path string) {
 	//m.currentM = path
+	m.Boards = make(map[string]Map)
 	file, err := os.Open(path)
 	if err != nil {
 		//handle error
@@ -72,35 +79,48 @@ func (m *OddMap) LoadMaps(path string) {
 	defer file.Close()
 	s := bufio.NewScanner(file)
 	//m.Board = make([][]string, 0) //clear loaded board
-	scannedlines := make([]string, 0)
+	//scannedlines := make([]string, 0)
 	for s.Scan() { //scan all lines in files to be loaded to individual maps
-		scannedlines = append(scannedlines, s.Text())
-	}
-	fmt.Println(scannedlines) //works until here
-	for x := 0; x < len(scannedlines); x++ {
+		sLine := strings.ReplaceAll(s.Text(), " ", "")
 		y := Map{}
-		y.Name = scannedlines[x]
-		fmt.Println(x)
-		for ; x < x+m.height; x++ {
-			y.Map = append(y.Map, strings.Split(scannedlines[x], ""))
+		if sLine[:5] == "START" {
+			y.Name = sLine[5:]
+			state := true
+			for s.Scan() && state {
+				sLine := strings.ReplaceAll(s.Text(), " ", "")
+				if sLine[:3] == "END" {
+					state = false
+					break
+				}
+				y.Map = append(y.Map, strings.Split(sLine, ""))
+
+			}
+			fmt.Println(formatToBoard(y.Map))
 		}
 		m.Boards[y.Name] = y
-
 	}
 	fmt.Println(m.Boards)
 
 }
 
-func (m *OddMap) reloadCurrentMap(name string) {
-	m.currentMap = m.Boards[(m.currentMapName)].Map
-
-}
-
 func (m *OddMap) LoadMap(name string) {
-	m.reloadCurrentMap(name)
+	m.CurrentMap = m.Boards[name].Map
+	m.currentMapName = name
 }
 
-func checkPlayerPosition(m *OddMap) {
+func (m *OddMap) PlainMap() string {
+	m.regenerateBoard()
+	return formatToBoard(m.CurrentMap)
+}
+
+func (m *OddMap) PlayerMap() string {
+	a := *m
+	//m.regenerateBoard()
+	a.CurrentMap[a.Player.Y][a.Player.X] = "X"
+	return formatToBoard(m.CurrentMap)
+}
+
+func (m *OddMap) checkPlayerPosition() {
 	if m.Player.X < 0 {
 		m.Player.X = 0
 	} else if m.Player.X >= m.width {
@@ -114,5 +134,5 @@ func checkPlayerPosition(m *OddMap) {
 }
 
 func (m *OddMap) regenerateBoard() {
-	m.reloadCurrentMap(m.currentMapName)
+	m.LoadMap(m.currentMapName)
 }
