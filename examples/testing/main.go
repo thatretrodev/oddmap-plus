@@ -25,6 +25,7 @@ func main() {
 	var dir string
 	var strength int
 	for {
+
 		fmt.Println(oddmap.PlayerMap(&x))
 		fmt.Println(x.Player.X, x.Player.Y)
 		fmt.Println("Enter direction and force:")
