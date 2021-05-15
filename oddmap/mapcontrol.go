@@ -1,21 +1,16 @@
 package oddmap
 
-import (
-	"fmt"
-	"strings"
-)
+import "strings"
 
-func PlainMap(m *OddMap) string {
-	fmt.Println(m.CurrentMap)
+func PlainMap(m OddMap) string {
 	m.regenerateBoard()
-	return formatToBoard(m.CurrentMap)
+	return formatToBoard(m.currentMap)
 }
 
-func PlayerMap(m *OddMap) string {
+func PlayerMap(m OddMap) string {
 	m.regenerateBoard()
-	fmt.Println(m.CurrentMap)
-	m.CurrentMap[m.Player.Y][m.Player.X] = "X"
-	return formatToBoard(m.CurrentMap)
+	m.currentMap[m.Player.Y][m.Player.X] = "X"
+	return formatToBoard(m.currentMap)
 }
 
 func formatToBoard(m [][]string) string {
