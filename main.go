@@ -4,7 +4,7 @@ import (
 	"C"
 	"fmt"
 	
-	"github.com/thatretrodev/oddmap-plus/oddmap"
+	"github.com/fisik-yum/oddmap"
 )
 
 func main() {
