@@ -1,7 +1,6 @@
 package main
 
 import (
-	"C"
 	"fmt"
 
 	oddmap "github.com/fisik-yum/oddmap"

@@ -2,6 +2,8 @@ package oddmap
 
 import (
 	"log"
+
+	"github.com/ulule/deepcopier"
 )
 
 const (
@@ -70,12 +72,15 @@ func (m *OddMap) LoadMap(name string) {
 }
 
 func (m *OddMap) PlainMap() string {
-	m.regenerateBoard()
-	return formatToBoard(m.CurrentMap)
+	a := OddMap{}
+	//m.regenerateBoard()
+	deepcopier.Copy(m).To(a)
+	return formatToBoard(a.CurrentMap)
 }
 
 func (m *OddMap) PlayerMap() string {
-	a := *m
+	a := OddMap{}
+	deepcopier.Copy(m).To(a)
 	//m.regenerateBoard()
 	a.CurrentMap[a.Player.Y][a.Player.X] = "X"
 	return formatToBoard(m.CurrentMap)
@@ -83,13 +88,13 @@ func (m *OddMap) PlayerMap() string {
 
 func (m *OddMap) checkPlayerPosition() {
 	if m.Player.X < 0 {
-		m.Player.X = 0
+		m.Player.X = m.width - 1
 	} else if m.Player.X >= m.width {
-		m.Player.X = m.width
+		m.Player.X = 0
 	} else if m.Player.Y < 0 {
-		m.Player.Y = 0
+		m.Player.Y = m.height - 1
 	} else if m.Player.Y > m.height {
-		m.Player.Y = m.height
+		m.Player.Y = 0
 	}
 
 }
