@@ -20,13 +20,13 @@ func main() {
 	x.SetPlayerPosition(18, 0)
 	fmt.Println(x.Player.X, x.Player.Y)
 	fmt.Println(x.Player.X, x.Player.Y)
-	fmt.Println(oddmap.PlayerMap(&x))
-	fmt.Println(oddmap.PlainMap(&x))
+	fmt.Println(x.PlayerMap())
+	fmt.Println(x.PlainMap())
 	var dir string
 	var strength int
 	for {
 
-		fmt.Println(oddmap.PlayerMap(&x))
+		fmt.Println(x.PlayerMap())
 		fmt.Println(x.Player.X, x.Player.Y)
 		fmt.Println("Enter direction and force:")
 		fmt.Scanln(&dir)
